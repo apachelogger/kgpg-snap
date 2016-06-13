@@ -4,8 +4,8 @@ summary: Flashcard application.
 description: KWordQuiz is a tool that gives you a powerful way to master new vocabularies. It may be a language or any other kind of terminology.
 
 apps:
-  kwordquiz:
-    command: qt5-launch usr/bin/kwordquiz
+  kgpg:
+    command: qt5-launch usr/bin/kgpg
     plugs: [x11, unity7, home, opengl, network, network-bind, network-manager]
 
 parts:
