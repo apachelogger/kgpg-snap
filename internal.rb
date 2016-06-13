@@ -55,11 +55,11 @@ class Snap
 end
 
 snap = Snap.new
-snap.name = 'org.kde.konsole'
+snap.name = 'konsole'
 snap.version = '16.04.1'
 snap.summary = ''
 snap.description = ''
-snap.apps = [Snap::App.new(snap.name)]
+snap.apps = [Snap::App.new(konsole)]
 File.write('snapcraft/snapcraft.yaml', snap.render)
 
 ### appstream
