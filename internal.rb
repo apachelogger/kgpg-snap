@@ -44,7 +44,6 @@ class Snap
   end
 
   attr_accessor :name
-  attr_accessor :rdn
   attr_accessor :version
   attr_accessor :summary
   attr_accessor :description
@@ -55,15 +54,6 @@ class Snap
   end
 end
 
-snap = Snap.new
-snap.name = 'konsole'
-snap.rdn = 'org.kde.konsole'
-snap.version = '16.04.1'
-snap.summary = ''
-snap.description = ''
-snap.apps = [Snap::App.new('konsole')]
-File.write('snapcraft/snapcraft.yaml', snap.render)
-
 ### appstream
 require 'fileutils'
 require 'gir_ffi'
@@ -72,10 +62,10 @@ GirFFI.setup(:AppStream)
 
 db = AppStream::Database.new
 db.open
-component = db.component_by_id("#{snap.rdn}.desktop")
+component = db.component_by_id('org.kde.konsole.desktop')
 component.name
 
-icon_url = ''
+icon_url = nil
 component.icons.each do |icon|
   puts icon.kind
   puts icon.url
@@ -85,8 +75,16 @@ end
 p component.summary
 p component.description
 
-# FileUtils.cp(icon_url, 'snapcraft/gui/icon')
+FileUtils.cp(icon_url, 'snapcraft/gui/icon') if icon_url
 ###
+
+snap = Snap.new
+snap.name = 'konsole'
+snap.version = '16.04.1'
+snap.summary = component.summary
+snap.description = component.description
+snap.apps = [Snap::App.new('konsole')]
+File.write('snapcraft/snapcraft.yaml', snap.render)
 
 Dir.chdir('snapcraft')
 system('snapcraft') || raise
