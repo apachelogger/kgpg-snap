@@ -44,6 +44,7 @@ class Snap
   end
 
   attr_accessor :name
+  attr_accessor :rdn
   attr_accessor :version
   attr_accessor :summary
   attr_accessor :description
@@ -56,6 +57,7 @@ end
 
 snap = Snap.new
 snap.name = 'konsole'
+snap.rdn = 'org.kde.konsole'
 snap.version = '16.04.1'
 snap.summary = ''
 snap.description = ''
@@ -70,7 +72,7 @@ GirFFI.setup(:AppStream)
 
 db = AppStream::Database.new
 db.open
-component = db.component_by_id("#{snap.name}.desktop")
+component = db.component_by_id("#{snap.rdn}.desktop")
 component.name
 
 icon_url = ''
