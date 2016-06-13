@@ -66,13 +66,15 @@ component.name
 
 icon_url = ''
 component.icons.each do |icon|
+  puts icon.kind
+  puts icon.url
   next unless icon.kind == :cached
   icon_url = icon.url
 end
 p component.summary
 p component.description
 
-FileUtils.cp(icon_url, 'snapcraft/gui/icon')
+# FileUtils.cp(icon_url, 'snapcraft/gui/icon')
 ###
 
 system('snapcraft', chdir: "#{__dir__}/snapcraft")
