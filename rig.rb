@@ -23,8 +23,10 @@ system('ls -lah /var/lib/jenkins')
 system('ls -lah /var/lib/jenkins/ci-tooling')
 system('ls -lah /var/lib/jenkins/ci-tooling/lib')
 
-# require '/var/lib/jenkins/ci-tooling/lib/apt'
+require '/var/lib/jenkins/ci-tooling/nci/lib/repo_setup.rb'
 
-# Apt.install('snapcraft')
+NCI.setup_repo!
 
-# package = 'kgpg'
+Apt.install('snapcraft')
+
+package = 'kgpg'
