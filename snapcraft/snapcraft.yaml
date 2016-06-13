@@ -41,5 +41,5 @@ parts:
       - breeze-icon-theme
       - plasma-integration
     snap:
-      - usr/lib
-      - usr/share
+      - usr/lib/*
+      - usr/share/*
