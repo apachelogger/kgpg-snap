@@ -47,7 +47,7 @@ class Snap
 end
 
 snap = Snap.new
-snap.name = 'kgpg'
+snap.name = 'org.kde.konsole'
 snap.version = '16.04.1'
 snap.summary = ''
 snap.description = ''
@@ -61,7 +61,7 @@ GirFFI.setup(:AppStream)
 
 db = AppStream::Database.new
 db.open
-component = db.component_by_id(ARGV[0])
+component = db.component_by_id("#{snap.name}.desktop")
 component.name
 
 icon_url = ''
