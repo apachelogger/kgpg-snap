@@ -19,25 +19,12 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
-$:.unshift('/var/lib/jenkins/ci-tooling')
-
-system('ls -lah /var/lib/jenkins')
-system('ls -lah /var/lib/jenkins/ci-tooling')
-system('ls -lah /var/lib/jenkins/ci-tooling/nci/lib')
-
 require '/var/lib/jenkins/ci-tooling/nci/lib/setup_repo.rb'
 
-class Snap
-  attr_reader :name
-  attr_reader :version
-  attr_reader :summary
-  attr_reader :description
-end
-
 NCI.setup_repo!
+Apt.install('snapcraft', 'appstream', 'gir1.2-appstream', 'libappstream-dev') || raise
+Apt.update || raise
+system('gem install gir_ffi') || raise
 
-Apt.install('snapcraft')
-
-package = 'kgpg'
-
-system('snapcraft', chdir: "#{__dir__}/snapcraft")
+# Switch into main script now that deps are set up
+exec('./internal.rb')
