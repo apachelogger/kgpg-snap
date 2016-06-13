@@ -4,18 +4,15 @@ summary: <%= summary %>
 description: <%= description %>
 
 apps:
-  kwordquiz:
-    command: qt5-launch usr/bin/kwordquiz
-    plugs: [x11, unity7, home, opengl, network, network-bind, network-manager]
+  <% apps.each do |app| %>
+    <%= app.to_yaml.gsub("---\n", "\n").gsub("\n", "\n  ")%>
+  <% end %>
 
 parts:
-  kwordquiz:
+  <%= name %>:
     plugin: nil
-    #configflags: [-DCMAKE_INSTALL_PREFIX=/usr]
-    #source: git://anongit.kde.org/kwordquiz.git
-    #source-type: git
     stage-packages:
-      - kwordquiz
+      - <%= name %>
     filesets:
       binaries:
         - usr/bin
@@ -25,10 +22,10 @@ parts:
         - usr/include/*
         - usr/lib/*/cmake/*
     stage:
-      - $binaries
       - etc
-      - usr/share/*
       - $libraries
+      - $binaries
+      - usr/share/*
     snap:
       - etc
       - $libraries
@@ -41,9 +38,8 @@ parts:
   integration:
     plugin: nil
     stage-packages:
-      - ttf-ubuntu-font-family
       - breeze-icon-theme
-      - hicolor-icon-theme
-      - oxygen-icon-theme
+      - plasma-integration
     snap:
-      - usr/share
+      - usr/lib/*
+      - usr/share/*

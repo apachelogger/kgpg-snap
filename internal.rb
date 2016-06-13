@@ -21,8 +21,10 @@
 
 $:.unshift('/var/lib/jenkins/ci-tooling')
 
-require 'yaml'
 require '/var/lib/jenkins/ci-tooling/nci/lib/setup_repo.rb'
+
+require 'erb'
+require 'yaml'
 
 class Snap
   class App
@@ -37,7 +39,7 @@ class Snap
     end
 
     def to_yaml(options = nil)
-      { @name => { command: @command, plugs: @plugs } }.to_yaml(options)
+      { @name => { 'command' => @command, 'plugs' => @plugs } }.to_yaml(options)
     end
   end
 
@@ -48,6 +50,7 @@ class Snap
   attr_accessor :apps
 
   def render
+    ERB.new(File.read('snapcraft/snapcraft.yaml.erb')).result(binding)
   end
 end
 
@@ -57,6 +60,7 @@ snap.version = '16.04.1'
 snap.summary = ''
 snap.description = ''
 snap.apps = [Snap::App.new(snap.name)]
+File.write('snapcraft/snapcraft.yaml', snap.render)
 
 ### appstream
 require 'fileutils'
