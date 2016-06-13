@@ -51,7 +51,7 @@ snap.name = 'kgpg'
 snap.version = '16.04.1'
 snap.summary = ''
 snap.description = ''
-snap.apps = [App.new(snap.name)]
+snap.apps = [Snap::App.new(snap.name)]
 
 ### appstream
 require 'fileutils'
