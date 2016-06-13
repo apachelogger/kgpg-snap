@@ -1,0 +1,49 @@
+name: <%= name %>
+version: <%= version %>
+summary: <%= summary %>
+description: <%= description %>
+
+apps:
+  kwordquiz:
+    command: qt5-launch usr/bin/kwordquiz
+    plugs: [x11, unity7, home, opengl, network, network-bind, network-manager]
+
+parts:
+  kwordquiz:
+    plugin: nil
+    #configflags: [-DCMAKE_INSTALL_PREFIX=/usr]
+    #source: git://anongit.kde.org/kwordquiz.git
+    #source-type: git
+    stage-packages:
+      - kwordquiz
+    filesets:
+      binaries:
+        - usr/bin
+      libraries:
+        - usr/lib/*
+      headers:
+        - usr/include/*
+        - usr/lib/*/cmake/*
+    stage:
+      - $binaries
+      - etc
+      - usr/share/*
+      - $libraries
+    snap:
+      - etc
+      - $libraries
+      - $binaries
+      - usr/share/*
+  environment:
+    plugin: copy
+    files:
+      qt5-launch: bin/qt5-launch
+  integration:
+    plugin: nil
+    stage-packages:
+      - ttf-ubuntu-font-family
+      - breeze-icon-theme
+      - hicolor-icon-theme
+      - oxygen-icon-theme
+    snap:
+      - usr/share
