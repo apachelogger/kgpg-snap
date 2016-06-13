@@ -1,7 +1,7 @@
 name: <%= name %>
 version: <%= version %>
-summary: <%= summary %>
-description: <%= description %>
+<%= { 'summary' => summary }.to_yaml %>
+<%= { 'description' => description }.to_yaml %>
 
 apps:
   <% apps.each do |app| %>
