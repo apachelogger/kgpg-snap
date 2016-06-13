@@ -20,6 +20,8 @@
 # License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
 system('ls -lah /var/lib/jenkins')
+system('ls -lah /var/lib/jenkins/ci-tooling')
+system('ls -lah /var/lib/jenkins/ci-tooling/lib')
 
 # require '/var/lib/jenkins/ci-tooling/lib/apt'
 
