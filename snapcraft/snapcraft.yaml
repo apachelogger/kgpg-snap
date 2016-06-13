@@ -8,6 +8,11 @@ apps:
     command: qt5-launch usr/bin/kgpg
     plugs: [x11, unity7, home, opengl, network, network-bind, network-manager]
 
+#  other props
+# icon
+# license
+
+
 parts:
   kgpg:
     plugin: nil
