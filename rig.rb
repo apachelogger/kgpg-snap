@@ -40,4 +40,4 @@ Apt.install('snapcraft')
 
 package = 'kgpg'
 
-system('snapcraft', chdir: 'snapcraft')
+system('snapcraft', chdir: "#{__dir__}/snapcraft")
