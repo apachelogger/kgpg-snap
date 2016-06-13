@@ -31,7 +31,7 @@ class Snap
 
     def initialize(name)
       @name = name
-      @command = "qt5-launch usr/bin/#{binary}"
+      @command = "qt5-launch usr/bin/#{name}"
       @plugs = %w(x11 unity7 home opengl network network-bind network-manager)
     end
   end
