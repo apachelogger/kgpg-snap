@@ -23,7 +23,7 @@ system('ls -lah /var/lib/jenkins')
 system('ls -lah /var/lib/jenkins/ci-tooling')
 system('ls -lah /var/lib/jenkins/ci-tooling/nci/lib')
 
-require '/var/lib/jenkins/ci-tooling/nci/lib/repo_setup.rb'
+require '/var/lib/jenkins/ci-tooling/nci/lib/setup_repo.rb'
 
 NCI.setup_repo!
 
