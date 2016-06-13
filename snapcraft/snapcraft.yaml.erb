@@ -1,11 +1,11 @@
 name: <%= name %>
 version: <%= version %>
-<%= { 'summary' => summary }.to_yaml %>
-<%= { 'description' => description }.to_yaml %>
+<%= { 'summary' => summary }.to_yaml.sub('---', '') %>
+<%= { 'description' => description }.to_yaml.sub('---', '') %>
 
 apps:
   <% apps.each do |app| %>
-    <%= app.to_yaml.gsub("---\n", "\n").gsub("\n", "\n  ")%>
+    <%= app.to_yaml.sub('---', '').gsub("\n", "\n  ")%>
   <% end %>
 
 parts:
