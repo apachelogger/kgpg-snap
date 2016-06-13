@@ -27,6 +27,13 @@ system('ls -lah /var/lib/jenkins/ci-tooling/nci/lib')
 
 require '/var/lib/jenkins/ci-tooling/nci/lib/setup_repo.rb'
 
+class Snap
+  attr_reader :name
+  attr_reader :version
+  attr_reader :summary
+  attr_reader :description
+end
+
 NCI.setup_repo!
 
 Apt.install('snapcraft')
