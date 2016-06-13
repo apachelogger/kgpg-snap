@@ -12,7 +12,7 @@ parts:
   <%= name %>:
     plugin: nil
     stage-packages:
-      - <%= name %>
+      - <%= name.split('.')[-1] %>
     filesets:
       binaries:
         - usr/bin
