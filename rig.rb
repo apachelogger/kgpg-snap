@@ -39,3 +39,5 @@ NCI.setup_repo!
 Apt.install('snapcraft')
 
 package = 'kgpg'
+
+system('snapcraft', chdir: 'snapcraft')
