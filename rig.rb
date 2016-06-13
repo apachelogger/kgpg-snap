@@ -23,7 +23,8 @@ require '/var/lib/jenkins/ci-tooling/nci/lib/setup_repo.rb'
 
 NCI.setup_repo!
 Apt.install('snapcraft', 'appstream', 'gir1.2-appstream',
-            'libappstream-dev', 'libgirepository1.0-dev') || raise
+            'libappstream-dev', 'libgirepository1.0-dev',
+            'zsync') || raise
 Apt.update || raise
 system('gem install gir_ffi') || raise
 

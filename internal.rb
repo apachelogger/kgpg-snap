@@ -21,6 +21,7 @@
 
 $:.unshift('/var/lib/jenkins/ci-tooling')
 
+require 'yaml'
 require '/var/lib/jenkins/ci-tooling/nci/lib/setup_repo.rb'
 
 class Snap
@@ -33,6 +34,10 @@ class Snap
       @name = name
       @command = "qt5-launch usr/bin/#{name}"
       @plugs = %w(x11 unity7 home opengl network network-bind network-manager)
+    end
+
+    def to_yaml(options = nil)
+      { @name => { command: @command, plugs: @plugs } }.to_yaml(options)
     end
   end
 
@@ -77,4 +82,8 @@ p component.description
 # FileUtils.cp(icon_url, 'snapcraft/gui/icon')
 ###
 
-system('snapcraft', chdir: "#{__dir__}/snapcraft") || raise
+Dir.chdir('snapcraft')
+system('snapcraft') || raise
+Dir.glob('*.snap') do |f|
+  system('zsyncmake', f) || raise
+end
