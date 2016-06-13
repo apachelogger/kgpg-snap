@@ -77,4 +77,4 @@ p component.description
 # FileUtils.cp(icon_url, 'snapcraft/gui/icon')
 ###
 
-system('snapcraft', chdir: "#{__dir__}/snapcraft")
+system('snapcraft', chdir: "#{__dir__}/snapcraft") || raise
