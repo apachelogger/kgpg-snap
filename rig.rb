@@ -19,6 +19,8 @@
 # You should have received a copy of the GNU Lesser General Public
 # License along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
+$:.unshift('/var/lib/jenkins/ci-tooling')
+
 system('ls -lah /var/lib/jenkins')
 system('ls -lah /var/lib/jenkins/ci-tooling')
 system('ls -lah /var/lib/jenkins/ci-tooling/nci/lib')
