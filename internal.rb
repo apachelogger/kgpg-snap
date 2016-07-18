@@ -62,7 +62,7 @@ runtimedeps = %w(plasma-integration)
 
 
 snap = Snap.new
-snap.name = 'ark'
+snap.name = 'kcalc'
 snap.version = '16.04.1'
 snap.stagedepends = `apt-cache depends #{snap.name} | awk '/Depends:/{print$2}' | sed -e 's/Depends:/""/' | sed -e '/</ d'`.split("\n")
 snap.stagedepends += `apt-cache depends #{snap.name} | awk '/Recommends:/{print$2}' | sed -e 's/Recommends:/""/' | sed -e '/</ d'`.split("\n")
