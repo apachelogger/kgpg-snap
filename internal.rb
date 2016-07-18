@@ -109,6 +109,11 @@ else
 end
 
 snap.apps = [Snap::App.new(snap.name)]
+
+##
+
+Dir.chdir('snapcraft')
+
 File.write('snapcraft.yaml', snap.render)
 
 system('snapcraft pull') || raise
@@ -132,10 +137,6 @@ FileUtils.cp(desktop_url, "setup/gui/#{desktopfile}") if desktop_url
 if File.exist?(help_desktop_url)
   FileUtils.cp(help_desktop_url, "setup/gui/#{helpdesktopfile}")
 end
-
-##
-
-Dir.chdir('snapcraft')
 
 system('snapcraft stage') || raise
 system('snapcraft build') || raise
