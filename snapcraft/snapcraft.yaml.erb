@@ -11,12 +11,18 @@ apps:
 parts:
   <%= name %>:
     plugin: nil
+    build-packages:
+      - shared-mime-info
     stage-packages:
       - <%= name %>
+    <% stagedepends.each do |stagedepends| %>
+      <%= stagedepends.to_yaml.sub('---', '-').gsub("\n", '').sub("...", '').gsub("\n", '')%>
+    <% end %>
     filesets:
       binaries:
         - usr/bin
       libraries:
+        - lib/*
         - usr/lib/*
       headers:
         - usr/include/*
@@ -35,11 +41,3 @@ parts:
     plugin: copy
     files:
       qt5-launch: bin/qt5-launch
-  integration:
-    plugin: nil
-    stage-packages:
-      - breeze-icon-theme
-      - plasma-integration
-    snap:
-      - usr/lib/*
-      - usr/share/*

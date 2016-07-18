@@ -2,6 +2,7 @@
 # frozen_string_literal: true
 #
 # Copyright (C) 2016 Harald Sitter <sitter@kde.org>
+#               2016 Scarlett Clark <sgclark@kde.org>
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -35,7 +36,7 @@ class Snap
     def initialize(name)
       @name = name
       @command = "qt5-launch usr/bin/#{name}"
-      @plugs = %w(x11 unity7 home opengl network network-bind network-manager)
+      @plugs = %w(x11 unity7 home opengl)
     end
 
     def to_yaml(options = nil)
@@ -44,6 +45,7 @@ class Snap
   end
 
   attr_accessor :name
+  attr_accessor :stagedepends
   attr_accessor :version
   attr_accessor :summary
   attr_accessor :description
@@ -54,6 +56,40 @@ class Snap
   end
 end
 
+runtimedeps = %w(plasma-integration)
+
+###
+
+
+snap = Snap.new
+snap.name = 'ark'
+snap.version = '16.04.1'
+snap.stagedepends = `apt-cache depends #{snap.name} | awk '/Depends:/{print$2}' | sed -e 's/Depends:/""/' | sed -e '/</ d'`.split("\n")
+snap.stagedepends += `apt-cache depends #{snap.name} | awk '/Recommends:/{print$2}' | sed -e 's/Recommends:/""/' | sed -e '/</ d'`.split("\n")
+snap.stagedepends += `apt-cache depends #{snap.name} | awk '/Suggests:/{print$2}' | sed -e 's/Suggests:/""/' | sed -e '/</ d'`.split("\n")
+
+runtimedeps.each do |dep|
+  snap.stagedepends.push dep
+  runtimedep = `apt-cache depends #{dep} | awk '/Depends:/{print$2}' | sed -e '/</ d' | sed -e 's/ |Depends:/""/' | sed -e 's/  Depends:/""/'`.split("\n")
+  runtimedep.each do |dep|
+    snap.stagedepends |= [dep]
+  end
+  runtimerec = `apt-cache depends #{dep} | awk '/Recommends:/{print$2}' | sed -e '/</ d' | sed -e 's/ |Recommends:/""/' | sed -e 's/  Depends:/""/'`.split("\n")
+  runtimerec.each do |dep|
+    snap.stagedepends |= [dep]
+  end
+  runtimesug = `apt-cache depends #{dep} | awk '/Suggests:/{print$2}' | sed -e '/</ d' | sed -e 's/ |Suggests:/""/' | sed -e 's/  Depends:/""/'`.split("\n")
+  runtimesug.each do |dep|
+    snap.stagedepends |= [dep]
+  end
+end
+snap.stagedepends.sort!
+p snap.stagedepends
+
+desktopfile = "org.kde.#{snap.name}.desktop"
+#desktopfile = "#{snap.name}.desktop"
+helpdesktopfile = 'org.kde.Help.desktop'
+
 ### appstream
 require 'fileutils'
 require 'gir_ffi'
@@ -62,32 +98,51 @@ GirFFI.setup(:AppStream)
 
 db = AppStream::Database.new
 db.open
-component = db.component_by_id('org.kde.konsole.desktop')
-component.name
+component = db.component_by_id("#{desktopfile}")
+
+if !component.nil?
+  snap.summary = component.summary
+  snap.description = component.description
+else
+  snap.summary = 'No appstream summary, needs bug filed'
+  snap.description = 'No appstream description, needs bug filed'
+end
+
+snap.apps = [Snap::App.new(snap.name)]
+File.write('snapcraft.yaml', snap.render)
+
+system('snapcraft pull') || raise
 
 icon_url = nil
-component.icons.each do |icon|
-  puts icon.kind
-  puts icon.url
-  next unless icon.kind == :cached
-  icon_url = icon.url
+unless component.nil?
+  component.icons.each do |icon|
+    puts icon.kind
+    puts icon.url
+    next unless icon.kind == :cached
+    icon_url = icon.url
+  end
 end
-p component.summary
-p component.description
 
-FileUtils.cp(icon_url, 'snapcraft/gui/icon') if icon_url
-###
+desktop_url = "parts/#{snap.name}/install/usr/share/applications/#{desktopfile}"
+help_desktop_url = "parts/#{snap.name}/install/usr/share/applications/#{helpdesktopfile}"
 
-snap = Snap.new
-snap.name = 'konsole'
-snap.version = '16.04.1'
-snap.summary = component.summary
-snap.description = component.description
-snap.apps = [Snap::App.new('konsole')]
-File.write('snapcraft/snapcraft.yaml', snap.render)
+FileUtils.mkpath('setup/gui/')
+FileUtils.cp(icon_url, 'setup/gui/icon') if icon_url
+FileUtils.cp(desktop_url, "setup/gui/#{desktopfile}") if desktop_url
+if File.exist?(help_desktop_url)
+  FileUtils.cp(help_desktop_url, "setup/gui/#{helpdesktopfile}")
+end
+
+##
 
 Dir.chdir('snapcraft')
-system('snapcraft') || raise
+
+system('snapcraft stage') || raise
+system('snapcraft build') || raise
+system('snapcraft prime') || raise
+system('snapcraft clean') || raise
+system('snapcraft snap') || raise
+
 Dir.glob('*.snap') do |f|
   system('zsyncmake', f) || raise
 end
