@@ -109,12 +109,11 @@ else
 end
 
 snap.apps = [Snap::App.new(snap.name)]
+File.write('snapcraft/snapcraft.yaml', snap.render)
 
 ##
 
 Dir.chdir('snapcraft')
-
-File.write('snapcraft.yaml', snap.render)
 
 system('snapcraft pull') || raise
 
