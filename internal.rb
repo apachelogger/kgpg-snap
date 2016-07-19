@@ -66,7 +66,6 @@ snap.name = 'kcalc'
 snap.version = '16.04.1'
 snap.stagedepends = `apt-cache depends #{snap.name} | awk '/Depends:/{print$2}' | sed -e 's/Depends:/""/' | sed -e '/</ d'`.split("\n")
 snap.stagedepends += `apt-cache depends #{snap.name} | awk '/Recommends:/{print$2}' | sed -e 's/Recommends:/""/' | sed -e '/</ d'`.split("\n")
-snap.stagedepends += `apt-cache depends #{snap.name} | awk '/Suggests:/{print$2}' | sed -e 's/Suggests:/""/' | sed -e '/</ d'`.split("\n")
 
 runtimedeps.each do |dep|
   snap.stagedepends.push dep
@@ -76,10 +75,6 @@ runtimedeps.each do |dep|
   end
   runtimerec = `apt-cache depends #{dep} | awk '/Recommends:/{print$2}' | sed -e '/</ d' | sed -e 's/ |Recommends:/""/' | sed -e 's/  Depends:/""/'`.split("\n")
   runtimerec.each do |dep|
-    snap.stagedepends |= [dep]
-  end
-  runtimesug = `apt-cache depends #{dep} | awk '/Suggests:/{print$2}' | sed -e '/</ d' | sed -e 's/ |Suggests:/""/' | sed -e 's/  Depends:/""/'`.split("\n")
-  runtimesug.each do |dep|
     snap.stagedepends |= [dep]
   end
 end
