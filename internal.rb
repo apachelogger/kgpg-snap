@@ -58,7 +58,7 @@ helpdesktopfile = 'org.kde.Help.desktop'
 
 appstreamer = AppStreamer.new(desktopfile)
 appstreamer.expand(snap)
-icon_url = appstreamer.icon
+icon_url = appstreamer.icon_url
 snap.apps = [Snap::App.new(snap.name)]
 File.write('snapcraft/snapcraft.yaml', snap.render)
 
