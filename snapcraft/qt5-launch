@@ -63,14 +63,13 @@ export QML2_IMPORT_PATH=$QML2_IMPORT_PATH:$SNAP/lib/$ARCH
 # of the system Compose files
 export QTCOMPOSE=$SNAP/usr/share/X11/locale
 
-export DESKTOP_SESSION=ubuntu
-export XDG_SESSION_DESKTOP=ubuntu
-export XDG_CURRENT_DESKTOP=kde
-export QT_QPA_PLATFORMTHEME=appmenu-qt5
+export DESKTOP_SESSION=/usr/share/xsessions/plasma
+export XDG_SESSION_DESKTOP=KDE
+export XDG_CURRENT_DESKTOP=KDE
+export QT_QPA_PLATFORMTHEME=kde
 export QT_XKB_CONFIG_ROOT=/usr/share/X11/xkb
 export XDG_RUNTIME_DIR=$SNAP_USER_DATA/.local-$SNAP_VERSION/var/run/$UID
 mkdir -p $XDG_RUNTIME_DIR
 
 cd $SNAP
 exec "$@"
-
