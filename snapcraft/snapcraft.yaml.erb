@@ -21,22 +21,30 @@ parts:
     filesets:
       binaries:
         - usr/bin
+      configs:
+        - etc
+      data:
+        - usr/share/*
+        - -usr/share/doc
+        - -usr/share/man
+        - -usr/share/wallpapers
       libraries:
         - lib/*
         - usr/lib/*
+        - -usr/lib/*/dri
       headers:
         - usr/include/*
         - usr/lib/*/cmake/*
     stage:
-      - etc
+      - $configs
       - $libraries
       - $binaries
-      - usr/share/*
+      - $data
     snap:
-      - etc
+      - $configs
       - $libraries
       - $binaries
-      - usr/share/*
+      - $data
   environment:
     plugin: copy
     files:
