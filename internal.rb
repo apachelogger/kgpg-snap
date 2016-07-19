@@ -137,11 +137,7 @@ if File.exist?(help_desktop_url)
   FileUtils.cp(help_desktop_url, "setup/gui/#{helpdesktopfile}")
 end
 
-system('snapcraft stage') || raise
-system('snapcraft build') || raise
-system('snapcraft prime') || raise
-system('snapcraft clean') || raise
-system('snapcraft snap') || raise
+system('snapcraft') || raise
 
 Dir.glob('*.snap') do |f|
   system('zsyncmake', f) || raise
