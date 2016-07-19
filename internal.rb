@@ -23,43 +23,13 @@
 $:.unshift('/var/lib/jenkins/ci-tooling')
 
 require '/var/lib/jenkins/ci-tooling/nci/lib/setup_repo.rb'
-
-require 'erb'
-require 'yaml'
-
-class Snap
-  class App
-    attr_accessor :name
-    attr_accessor :command
-    attr_accessor :plugs
-
-    def initialize(name)
-      @name = name
-      @command = "qt5-launch usr/bin/#{name}"
-      @plugs = %w(x11 unity7 home opengl)
-    end
-
-    def to_yaml(options = nil)
-      { @name => { 'command' => @command, 'plugs' => @plugs } }.to_yaml(options)
-    end
-  end
-
-  attr_accessor :name
-  attr_accessor :stagedepends
-  attr_accessor :version
-  attr_accessor :summary
-  attr_accessor :description
-  attr_accessor :apps
-
-  def render
-    ERB.new(File.read('snapcraft/snapcraft.yaml.erb')).result(binding)
-  end
-end
+require_relative 'lib/appstreamer.rb'
+require_relative 'lib/snap.rb'
+require_relative 'lib/snapcraft.rb'
 
 runtimedeps = %w(plasma-integration)
 
 ###
-
 
 snap = Snap.new
 snap.name = 'kcalc'
@@ -82,45 +52,20 @@ snap.stagedepends.sort!
 p snap.stagedepends
 
 desktopfile = "org.kde.#{snap.name}.desktop"
-#desktopfile = "#{snap.name}.desktop"
 helpdesktopfile = 'org.kde.Help.desktop'
 
 ### appstream
-require 'fileutils'
-require 'gir_ffi'
 
-GirFFI.setup(:AppStream)
-
-db = AppStream::Database.new
-db.open
-component = db.component_by_id("#{desktopfile}")
-
-if !component.nil?
-  snap.summary = component.summary
-  snap.description = component.description
-else
-  snap.summary = 'No appstream summary, needs bug filed'
-  snap.description = 'No appstream description, needs bug filed'
-end
-
+appstreamer = AppStreamer.new(desktopfile)
+appstreamer.expand(snap)
+icon_url = appstreamer.icon
 snap.apps = [Snap::App.new(snap.name)]
 File.write('snapcraft/snapcraft.yaml', snap.render)
 
 ##
 
 Dir.chdir('snapcraft')
-
-system('snapcraft pull') || raise
-
-icon_url = nil
-unless component.nil?
-  component.icons.each do |icon|
-    puts icon.kind
-    puts icon.url
-    next unless icon.kind == :cached
-    icon_url = icon.url
-  end
-end
+Snapcraft.pull
 
 desktop_url = "parts/#{snap.name}/install/usr/share/applications/#{desktopfile}"
 help_desktop_url = "parts/#{snap.name}/install/usr/share/applications/#{helpdesktopfile}"
@@ -132,7 +77,7 @@ if File.exist?(help_desktop_url)
   FileUtils.cp(help_desktop_url, "setup/gui/#{helpdesktopfile}")
 end
 
-system('snapcraft') || raise
+Snapcraft.run
 
 Dir.glob('*.snap') do |f|
   system('zsyncmake', f) || raise
